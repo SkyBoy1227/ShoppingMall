@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import com.sky.app.shoppingmall.base.BaseFragment;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created with Android Studio.
  * 描述: 发现的Fragment
@@ -19,6 +17,7 @@ import static android.content.ContentValues.TAG;
  * @version ${VERSION}
  */
 public class CommunityFragment extends BaseFragment {
+    private static final String TAG = CommunityFragment.class.getSimpleName();
     private TextView textView;
 
     @Override
