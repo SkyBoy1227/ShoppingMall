@@ -9,6 +9,11 @@ import android.widget.Toast;
 
 import com.sky.app.shoppingmall.R;
 import com.sky.app.shoppingmall.base.BaseFragment;
+import com.sky.app.shoppingmall.utils.Constants;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import okhttp3.Call;
 
 
 /**
@@ -60,5 +65,39 @@ public class HomeFragment extends BaseFragment {
     public void initData() {
         super.initData();
         Log.e(TAG, "主页面的Fragment的数据被初始化了");
+        getDataFromNet();
+    }
+
+    /**
+     * 联网请求数据
+     */
+    private void getDataFromNet() {
+        String url = Constants.HOME_URL;
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    /**
+                     * 当请求失败的时候回调
+                     * @param call
+                     * @param e
+                     * @param id
+                     */
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG, "首页请求失败==" + e.getMessage());
+                    }
+
+                    /**
+                     * 当联网成功的时候回调
+                     * @param response 请求成功的数据
+                     * @param id
+                     */
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, "首页请求成功==" + response);
+                    }
+                });
     }
 }
