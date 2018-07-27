@@ -7,8 +7,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.sky.app.shoppingmall.R;
 import com.sky.app.shoppingmall.base.BaseFragment;
+import com.sky.app.shoppingmall.home.bean.ResultBeanData;
 import com.sky.app.shoppingmall.utils.Constants;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -32,6 +34,11 @@ public class HomeFragment extends BaseFragment {
     private ImageView ib_top;
     private TextView tv_search_home;
     private TextView tv_message_home;
+
+    /**
+     * 返回的数据
+     */
+    private ResultBeanData.ResultBean resultBean;
 
     @Override
     public View initView() {
@@ -97,7 +104,19 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.e(TAG, "首页请求成功==" + response);
+                        processData(response);
                     }
                 });
+    }
+
+    /**
+     * 解析数据
+     *
+     * @param json
+     */
+    private void processData(String json) {
+        ResultBeanData resultBeanData = JSON.parseObject(json, ResultBeanData.class);
+        resultBean = resultBeanData.getResult();
+        Log.e(TAG, "解析成功==" + resultBean.getHot_info().get(0).getName());
     }
 }
