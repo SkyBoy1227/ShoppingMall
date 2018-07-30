@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.sky.app.shoppingmall.R;
 import com.sky.app.shoppingmall.base.BaseFragment;
+import com.sky.app.shoppingmall.home.adapter.HomeFragmentAdapter;
 import com.sky.app.shoppingmall.home.bean.ResultBeanData;
 import com.sky.app.shoppingmall.utils.Constants;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -39,6 +40,7 @@ public class HomeFragment extends BaseFragment {
      * 返回的数据
      */
     private ResultBeanData.ResultBean resultBean;
+    private HomeFragmentAdapter adapter;
 
     @Override
     public View initView() {
@@ -117,6 +119,14 @@ public class HomeFragment extends BaseFragment {
     private void processData(String json) {
         ResultBeanData resultBeanData = JSON.parseObject(json, ResultBeanData.class);
         resultBean = resultBeanData.getResult();
-        Log.e(TAG, "解析成功==" + resultBean.getHot_info().get(0).getName());
+        if (resultBean != null) {
+            // 有数据
+            Log.e(TAG, "解析成功==" + resultBean.getHot_info().get(0).getName());
+            // 设置适配器
+            adapter = new HomeFragmentAdapter(mContext,resultBean);
+            rvHome.setAdapter(adapter);
+        } else {
+            // 没有数据
+        }
     }
 }
