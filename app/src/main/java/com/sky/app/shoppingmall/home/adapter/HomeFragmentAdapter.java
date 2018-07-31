@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -100,8 +101,31 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == BANNER) {
             return new BannerViewHolder(mContext, mLayoutInflater.inflate(R.layout.banner_viewpager, null));
+        } else if (viewType == CHANNEL) {
+            return new ChannelViewHolder(mContext, mLayoutInflater.inflate(R.layout.channel_item, null));
         }
         return null;
+    }
+
+    class ChannelViewHolder extends RecyclerView.ViewHolder {
+        private Context mContext;
+        private GridView gridView;
+        private ChannelAdapter adapter;
+
+        public ChannelViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            this.gridView = itemView.findViewById(R.id.gv_channel);
+            // 设置item的点击事件
+            gridView.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(mContext, "position = " + position, Toast.LENGTH_SHORT).show());
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.ChannelInfoBean> channel_info) {
+            // 得到数据了
+            // 设置GridView的适配器
+            adapter = new ChannelAdapter(mContext, channel_info);
+            gridView.setAdapter(adapter);
+        }
     }
 
     class BannerViewHolder extends RecyclerView.ViewHolder {
@@ -161,6 +185,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         if (getItemViewType(position) == BANNER) {
             BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
             bannerViewHolder.setData(resultBean.getBanner_info());
+        } else if (getItemViewType(position) == CHANNEL) {
+            ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
+            channelViewHolder.setData(resultBean.getChannel_info());
         }
     }
 
@@ -171,7 +198,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
      */
     @Override
     public int getItemCount() {
-        return 1;
+        return 2;
     }
 
     /**
