@@ -65,6 +65,10 @@ public class ChannelAdapter extends BaseAdapter {
         // 根据位置得到对应的数据
         ResultBeanData.ResultBean.ChannelInfoBean channelInfoBean = datas.get(position);
         RequestOptions options = new RequestOptions()
+                // 正在加载中的图片
+                .placeholder(R.drawable.menu_cyc)
+                // 加载失败的图片
+                .error(R.drawable.menu_cyc)
                 // 磁盘缓存策略
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
         String imageUrl = Constants.BASE_URL_IMAGE + channelInfoBean.getImage();
