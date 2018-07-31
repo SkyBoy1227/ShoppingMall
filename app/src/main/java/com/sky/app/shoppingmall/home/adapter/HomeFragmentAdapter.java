@@ -1,6 +1,9 @@
 package com.sky.app.shoppingmall.home.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -28,8 +31,12 @@ import com.youth.banner.loader.ImageLoader;
 import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created with Android Studio.
@@ -124,6 +131,25 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         private TextView tv_more_seckill;
         private RecyclerView rv_seckill;
         private SeckillRecyclerViewAdapter adapter;
+        private long dt;
+
+        @SuppressLint("HandlerLeak")
+        private Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                dt -= 1000;
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
+                dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+                String time = dateFormat.format(new Date(dt));
+                tv_time_seckill.setText(time);
+                handler.removeMessages(0);
+                handler.sendEmptyMessageDelayed(0, 1000);
+                if (dt <= 0) {
+                    handler.removeCallbacksAndMessages(null);
+                }
+            }
+        };
 
         public SeckillViewHolder(Context mContext, View itemView) {
             super(itemView);
@@ -143,6 +169,10 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             rv_seckill.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             // 设置item的点击事件
             adapter.setOnSeckillRecyclerView(position -> Toast.makeText(mContext, "秒杀 = " + position, Toast.LENGTH_SHORT).show());
+
+            // 秒杀倒计时 - 毫秒
+            dt = Integer.valueOf(seckill_info.getEnd_time()) - Integer.valueOf(seckill_info.getStart_time());
+            handler.sendEmptyMessageDelayed(0, 1000);
         }
     }
 
