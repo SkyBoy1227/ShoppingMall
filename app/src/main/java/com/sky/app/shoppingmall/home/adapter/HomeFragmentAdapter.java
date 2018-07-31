@@ -123,8 +123,63 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             return new SeckillViewHolder(mContext, mLayoutInflater.inflate(R.layout.seckill_item, null));
         } else if (viewType == RECOMMEND) {
             return new RecommendViewHolder(mContext, mLayoutInflater.inflate(R.layout.recommend_item, null));
+        } else if (viewType == HOT) {
+            return new HotViewHolder(mContext, mLayoutInflater.inflate(R.layout.hot_item, null));
         }
         return null;
+    }
+
+    /**
+     * 相当于getview中的绑定数据模块
+     *
+     * @param holder
+     * @param position
+     */
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == BANNER) {
+            BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
+            bannerViewHolder.setData(resultBean.getBanner_info());
+        } else if (getItemViewType(position) == CHANNEL) {
+            ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
+            channelViewHolder.setData(resultBean.getChannel_info());
+        } else if (getItemViewType(position) == ACT) {
+            ActViewHolder actViewHolder = (ActViewHolder) holder;
+            actViewHolder.setData(resultBean.getAct_info());
+        } else if (getItemViewType(position) == SECKILL) {
+            SeckillViewHolder seckillViewHolder = (SeckillViewHolder) holder;
+            seckillViewHolder.setData(resultBean.getSeckill_info());
+        } else if (getItemViewType(position) == RECOMMEND) {
+            RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
+            recommendViewHolder.setData(resultBean.getRecommend_info());
+        } else if (getItemViewType(position) == HOT) {
+            HotViewHolder hotViewHolder = (HotViewHolder) holder;
+            hotViewHolder.setData(resultBean.getHot_info());
+        }
+    }
+
+    class HotViewHolder extends RecyclerView.ViewHolder {
+
+        private Context mContext;
+        private TextView tv_more_hot;
+        private GridView gv_hot;
+        private HotAdapter adapter;
+
+        public HotViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            tv_more_hot = itemView.findViewById(R.id.tv_more_hot);
+            gv_hot = itemView.findViewById(R.id.gv_hot);
+            // 设置item的点击事件
+            gv_hot.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(mContext, "position==" + position, Toast.LENGTH_SHORT).show());
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
+            // 1.得到数据了
+            // 2.设置适配器
+            adapter = new HotAdapter(mContext, hot_info);
+            gv_hot.setAdapter(adapter);
+        }
     }
 
     class RecommendViewHolder extends RecyclerView.ViewHolder {
@@ -139,6 +194,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             this.mContext = mContext;
             tv_more_recommend = itemView.findViewById(R.id.tv_more_recommend);
             gv_recommend = itemView.findViewById(R.id.gv_recommend);
+            // 设置item的点击事件
             gv_recommend.setOnItemClickListener((parent, view, position, id) -> Toast.makeText(mContext, "position = " + position, Toast.LENGTH_SHORT).show());
         }
 
@@ -343,39 +399,13 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     }
 
     /**
-     * 相当于getview中的绑定数据模块
-     *
-     * @param holder
-     * @param position
-     */
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == BANNER) {
-            BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
-            bannerViewHolder.setData(resultBean.getBanner_info());
-        } else if (getItemViewType(position) == CHANNEL) {
-            ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
-            channelViewHolder.setData(resultBean.getChannel_info());
-        } else if (getItemViewType(position) == ACT) {
-            ActViewHolder actViewHolder = (ActViewHolder) holder;
-            actViewHolder.setData(resultBean.getAct_info());
-        } else if (getItemViewType(position) == SECKILL) {
-            SeckillViewHolder seckillViewHolder = (SeckillViewHolder) holder;
-            seckillViewHolder.setData(resultBean.getSeckill_info());
-        } else if (getItemViewType(position) == RECOMMEND) {
-            RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
-            recommendViewHolder.setData(resultBean.getRecommend_info());
-        }
-    }
-
-    /**
      * 总共有多少个item
      *
      * @return
      */
     @Override
     public int getItemCount() {
-        return 5;
+        return 6;
     }
 
     /**
