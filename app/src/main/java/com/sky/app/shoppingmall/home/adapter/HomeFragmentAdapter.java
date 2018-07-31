@@ -2,6 +2,8 @@ package com.sky.app.shoppingmall.home.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.sky.app.shoppingmall.R;
 import com.sky.app.shoppingmall.home.bean.ResultBeanData;
 import com.sky.app.shoppingmall.utils.Constants;
+import com.sky.app.shoppingmall.utils.DensityUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -103,8 +106,79 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             return new BannerViewHolder(mContext, mLayoutInflater.inflate(R.layout.banner_viewpager, null));
         } else if (viewType == CHANNEL) {
             return new ChannelViewHolder(mContext, mLayoutInflater.inflate(R.layout.channel_item, null));
+        } else if (viewType == ACT) {
+            return new ActViewHolder(mContext, mLayoutInflater.inflate(R.layout.act_item, null));
         }
         return null;
+    }
+
+    class ActViewHolder extends RecyclerView.ViewHolder {
+
+        private Context mContext;
+        private ViewPager viewPager;
+
+        public ActViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            viewPager = itemView.findViewById(R.id.act_viewpager);
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.ActInfoBean> act_info) {
+            viewPager.setPageMargin(DensityUtil.dip2px(mContext, 20));
+            //1.有数据了
+            //2.设置适配器
+            viewPager.setAdapter(new PagerAdapter() {
+                @Override
+                public int getCount() {
+                    return act_info.size();
+                }
+
+                /**
+                 *
+                 * @param view 页面
+                 * @param object instantiateItem方法返回的值
+                 * @return
+                 */
+                @Override
+                public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+                    return view == object;
+                }
+
+                /**
+                 *
+                 * @param container ViewPager
+                 * @param position 对应页面的位置
+                 * @return
+                 */
+                @NonNull
+                @Override
+                public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                    ImageView imageView = new ImageView(mContext);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    // 添加到容器中
+                    container.addView(imageView);
+                    RequestOptions options = new RequestOptions()
+                            // 磁盘缓存策略
+                            .diskCacheStrategy(DiskCacheStrategy.ALL);
+                    String imageUrl = Constants.BASE_URL_IMAGE + act_info.get(position).getIcon_url();
+                    Glide.with(mContext)
+                            // 图片地址
+                            .load(imageUrl)
+                            // 参数
+                            .apply(options)
+                            // 需要显示的ImageView控件
+                            .into(imageView);
+                    // 设置点击事件
+                    imageView.setOnClickListener(v -> Toast.makeText(mContext, "position = " + position, Toast.LENGTH_SHORT).show());
+                    return imageView;
+                }
+
+                @Override
+                public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+                    container.removeView((View) object);
+                }
+            });
+        }
     }
 
     class ChannelViewHolder extends RecyclerView.ViewHolder {
@@ -188,6 +262,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         } else if (getItemViewType(position) == CHANNEL) {
             ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
             channelViewHolder.setData(resultBean.getChannel_info());
+        } else if (getItemViewType(position) == ACT) {
+            ActViewHolder actViewHolder = (ActViewHolder) holder;
+            actViewHolder.setData(resultBean.getAct_info());
         }
     }
 
@@ -198,7 +275,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
      */
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 
     /**
