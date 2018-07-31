@@ -23,6 +23,8 @@ import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.loader.ImageLoader;
+import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
+import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,8 +127,13 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
         public void setData(List<ResultBeanData.ResultBean.ActInfoBean> act_info) {
             viewPager.setPageMargin(DensityUtil.dip2px(mContext, 20));
-            //1.有数据了
-            //2.设置适配器
+            // >=3
+            viewPager.setOffscreenPageLimit(3);
+
+            // setPageTransformer 决定动画效果
+            viewPager.setPageTransformer(true, new AlphaPageTransformer(new ScaleInTransformer()));
+            // 1.有数据了
+            // 2.设置适配器
             viewPager.setAdapter(new PagerAdapter() {
                 @Override
                 public int getCount() {
